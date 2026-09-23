@@ -2,16 +2,16 @@
 
 **Finding $75,964 in recoverable revenue before it walks out the door — a real churn prediction system built on 30,000 real subscribers**
 
-An end-to-end analysis of subscriber churn: a Python-built classification model, structured SQL analysis, and a fully interactive Power BI dashboard — identifying not just *who* is at risk, but *why*, and exactly what it's worth to act on it.
+An end-to-end analysis of subscriber churn: a Python-built classification model, structured SQL analysis, and a fully interactive dashboard — shipped both in Power BI and as a live web app — identifying not just *who* is at risk, but *why*, and exactly what it's worth to act on it.
 
 > **About the data:** this uses the KKBox Churn Prediction dataset (WSDM Cup) — real, anonymized subscriber data from KKBox, a real subscription music streaming service. KKBox is based in Asia, but the retention mechanics analyzed here are universal to any subscription business — the same dynamics apply to Spotify, Netflix, or a Canadian telecom's streaming add-on. Sampled to 30,000 members (stratified to preserve the real 8.99% churn rate) for portfolio scope.
 
-**Tools:** Python (pandas, scikit-learn) · PostgreSQL (Supabase) · Power BI
+**Tools:** Python (pandas, scikit-learn) · PostgreSQL (Supabase) · Power BI · React (live dashboard)
 **Techniques:** ETL and feature engineering on real messy data, memory-safe processing of an 18M-row log file, logistic regression classification, DAX measures and calculated tables, interactive filtering
 
 ---
 
-## [View the dashboard screenshots below](#the-dashboard) · [GitHub](.)
+## [Live Web Dashboard](https://subscriber-retention-dashboard.vercel.app) · [Dashboard screenshots](#the-dashboard) · [GitHub](.)
 
 ---
 
@@ -103,13 +103,17 @@ Trained a logistic regression classifier on a stratified 80/20 train/test split.
 
 Loaded the cleaned, feature-engineered, and model-scored data into a PostgreSQL database. Wrote structured queries answering the core business questions — churn by segment, revenue at risk by tier, customer lifetime value. See `sql/` and the [Query reference](FINDINGS.md#query-reference) in the findings log.
 
-### Step 6 — Interactive dashboard (Power BI)
+### Step 6 — Interactive dashboard (Power BI + live web app)
 
 Built "Subscriber Retention Intelligence" — an 11-visual, fully interactive Power BI dashboard connected to the same underlying data. Every visual, including a hero bubble chart mapping risk tiers by revenue exposure, responds live to a channel filter.
+
+The same design was then rebuilt as a standalone **React web app** (`web/`), deployed live on Vercel — so the dashboard is explorable by anyone with a browser, not just from screenshots. Same underlying figures as the Power BI build, verified query-by-query against Supabase.
 
 ---
 
 ## The dashboard
+
+**Explore it live:** **[subscriber-retention-dashboard.vercel.app](https://subscriber-retention-dashboard.vercel.app)** — every KPI, the hero bubble chart, and all five supporting panels recalculate in real time as you switch between signup channels. Screenshots below for reference in case the link ever goes down.
 
 ![Dashboard — all channels](assets/dashboard-all-channels.jpg)
 
@@ -144,7 +148,7 @@ Every KPI, the hero bubble chart, and all five supporting panels recalculate liv
 
 ## Method
 
-**Approach:** acquire and clean real data → engineer features → build and honestly evaluate a predictive model → structure the analysis in SQL → present it as an interactive tool.
+**Approach:** acquire and clean real data → engineer features → build and honestly evaluate a predictive model → structure the analysis in SQL → present it as an interactive tool, both in Power BI and as a live web app.
 
 **Validation:** the model's feature importance independently reproduced findings first discovered through manual exploration — auto-renew and cancellation history as dominant drivers, engagement volume as noise. That agreement across two independent methods is the strongest evidence the findings are real.
 
@@ -158,7 +162,7 @@ Every KPI, the hero bubble chart, and all five supporting panels recalculate liv
 | Precision/recall evaluation | Chosen over accuracy for an imbalanced classification problem |
 | SQL aggregation and grouping | Segment-level churn and revenue analysis |
 | DAX measures and calculated tables | Power BI, including dynamic filtering across all visuals |
-| Interactive dashboard design | Slicer-driven, fully recalculating KPIs, charts, and a bubble chart |
+| Interactive dashboard design | Slicer-driven, fully recalculating KPIs, charts, and a bubble chart — shipped in both Power BI and as a live React web app |
 
 ## Repository structure
 
@@ -178,6 +182,10 @@ subscriber-retention-intelligence/
 ├── powerbi/
 │   ├── subscriber-retention-intelligence.pbix
 │   └── subscriber-retention-intelligence.pdf
+├── web/                   # Live React dashboard (deployed on Vercel)
+│   ├── src/
+│   ├── package.json
+│   └── README.md
 └── assets/
     ├── dashboard-all-channels.jpg
     ├── dashboard-channel-9.jpg
